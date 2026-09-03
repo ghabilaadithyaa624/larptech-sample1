@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { Metadata } from "next";
 import { ArrowRight, ArrowDown, Check, Mic2, Video, Zap, Bot, CandlestickChart, Megaphone, Globe } from "lucide-react";
 import Link from "next/link";
@@ -106,17 +107,19 @@ export default function HomePage() {
             className="max-w-[560px] text-center text-[56px] font-medium leading-[96%] tracking-[-1px] text-white lg:text-[80px]"
           >
             {HERO_WORDS.map((word, i) => (
-              <span key={i} className="-mb-[0.22em] inline-block overflow-hidden pb-[0.22em] align-bottom">
-                <span
-                  className="hero-word-rise inline-block"
-                  style={{
-                    animation: `hero-word-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) ${i * 0.1}s both`,
-                  }}
-                >
-                  {word}
+              <Fragment key={i}>
+                <span className="-mb-[0.22em] inline-block overflow-hidden pb-[0.22em] align-bottom">
+                  <span
+                    className="hero-word-rise inline-block"
+                    style={{
+                      animation: `hero-word-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) ${i * 0.1}s both`,
+                    }}
+                  >
+                    {word}
+                  </span>
                 </span>
                 {i < HERO_WORDS.length - 1 ? " " : ""}
-              </span>
+              </Fragment>
             ))}
           </h1>
 
