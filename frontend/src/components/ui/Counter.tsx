@@ -23,11 +23,11 @@ export function Counter({
 
   useEffect(() => {
     if (!inView) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setValue(to);
-      return;
-    }
     let raf = 0;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      raf = requestAnimationFrame(() => setValue(to));
+      return () => cancelAnimationFrame(raf);
+    }
     const start = performance.now();
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);

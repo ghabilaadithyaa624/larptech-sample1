@@ -1,10 +1,12 @@
 import { z } from "zod";
 
 export const SERVICE_SLUGS = [
-  "custom-ai-agents",
-  "trading-agents",
-  "marketing-agents",
-  "website-development",
+  "marketing-ai",
+  "sales-ai",
+  "ai-agents",
+  "security-mssp",
+  "ecommerce-ai",
+  "trading-ai",
   "not-sure",
 ] as const;
 

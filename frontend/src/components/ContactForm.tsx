@@ -35,6 +35,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LeadInput>({
     resolver: zodResolver(leadSchema),
@@ -50,6 +51,11 @@ export function ContactForm({ initialService }: { initialService?: string }) {
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
     try {
+      if (process.env.NODE_ENV !== "production" && !process.env.NEXT_PUBLIC_API_URL) {
+        console.warn(
+          "NEXT_PUBLIC_API_URL is not set. Falling back to http://localhost:4000",
+        );
+      }
       const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
       const res = await fetch(`${apiUrl}/api/leads`, {
         method: "POST",
@@ -64,8 +70,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
         if (body?.fieldErrors) {
           // surface server-side field errors inline
           Object.entries(body.fieldErrors).forEach(([field, message]) => {
-            setFormError(message);
-            void field;
+            setError(field as keyof LeadInput, { message });
           });
         }
         setFormError(body?.message ?? "Something went wrong on our side. Your details are preserved — hit retry.");

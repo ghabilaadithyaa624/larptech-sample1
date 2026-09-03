@@ -1,4 +1,4 @@
-import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { index, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 /**
  * Leads captured from the public contact form.
@@ -38,7 +38,7 @@ export const waitlist = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
-    index("waitlist_email_product_idx").on(table.email, table.product),
+    uniqueIndex("waitlist_email_product_idx").on(table.email, table.product),
     index("waitlist_created_at_idx").on(table.createdAt),
   ],
 );

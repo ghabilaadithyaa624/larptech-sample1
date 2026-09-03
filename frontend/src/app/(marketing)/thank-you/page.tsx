@@ -66,11 +66,11 @@ export default async function ThankYouPage({
               {service ? (
                 <>
                   {" "}
-                  We've routed it to our <span className="font-medium text-snow">{service.name}</span>{" "}
+                  We&apos;ve routed it to our <span className="font-medium text-snow">{service.name}</span>{" "}
                   practice lead.
                 </>
               ) : (
-                <> We've routed it to the right practice lead.</>
+                <> We&apos;ve routed it to the right practice lead.</>
               )}{" "}
               Expect a human reply in under one business day.
             </p>

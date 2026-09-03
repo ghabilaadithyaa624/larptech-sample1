@@ -15,33 +15,34 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://larptech.io";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Larptech — AI Agents for Everything You Run On",
-    template: "%s — Larptech",
+    default: "LarpTech — AI solutions for everything that pays",
+    template: "%s — LarpTech",
   },
   description:
-    "Larptech builds custom AI agents, algorithmic trading systems, marketing automation and modern websites — scoped, built and fully handed off.",
+    "One AI partner across every revenue-driving function: marketing, sales, agents, security, e-commerce and trading. We scope, build and hand off working AI systems.",
   keywords: [
-    "custom AI agents",
-    "trading agents",
-    "AI marketing automation",
-    "website development",
-    "algorithmic trading AI",
-    "AI automation",
     "AI consulting",
+    "AI marketing automation",
+    "AI sales",
+    "AI agents",
+    "security MSSP",
+    "e-commerce AI",
+    "trading AI",
   ],
   openGraph: {
     type: "website",
-    siteName: "Larptech",
-    title: "Larptech — AI Agents for Everything Your Business Runs On",
+    siteName: "LarpTech",
+    title: "LarpTech — AI solutions for everything that pays",
     description:
-      "Custom AI agents, trading automation, marketing systems and modern websites — scoped, built and handed off by one person who's done it before.",
+      "One AI partner across every revenue-driving function: marketing, sales, agents, security, e-commerce and trading. We scope, build and hand off working AI systems.",
     url: siteUrl,
-    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Larptech — AI Agents" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "LarpTech — AI solutions for everything that pays" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Larptech — AI Agents for Everything Your Business Runs On",
-    description: "Custom AI. Shipped. Yours.",
+    title: "LarpTech — AI solutions for everything that pays",
+    description:
+      "One AI partner across every revenue-driving function: marketing, sales, agents, security, e-commerce and trading. We scope, build and hand off working AI systems.",
     images: ["/og.jpg"],
   },
   robots: { index: true, follow: true },
@@ -55,19 +56,20 @@ export const viewport: Viewport = {
 const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
-  name: "Larptech",
-  slogan: "AI agents for everything your business runs on.",
+  name: "LarpTech",
+  slogan: "AI solutions for everything that pays.",
   description:
-    "Larptech builds and hands off custom AI agents, algorithmic trading systems, AI marketing automation and modern websites.",
+    "One AI partner across every revenue-driving function: marketing, sales, agents, security, e-commerce and trading. We scope, build and hand off working AI systems.",
   url: siteUrl,
   email: "team@larptech.io",
   areaServed: "Worldwide",
   knowsAbout: [
-    "Custom AI agents",
-    "Algorithmic trading systems",
-    "AI marketing automation",
-    "Website development",
-    "AI workflow automation",
+    "Marketing AI",
+    "Sales AI",
+    "AI Agents",
+    "Security MSSP",
+    "E-commerce AI",
+    "Trading AI",
   ],
 };
 
@@ -77,7 +79,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="bg-ink text-snow font-sans antialiased">
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
         {gaId ? (

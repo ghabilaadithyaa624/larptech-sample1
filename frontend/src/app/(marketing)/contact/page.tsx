@@ -51,7 +51,7 @@ export default async function ContactPage({
             label="contact // consultation_request"
             title={
               preselectedName ? (
-                <>Let's talk {preselectedName}.</>
+                <>Let&apos;s talk {preselectedName}.</>
               ) : (
                 <>Book a consultation.</>
               )
@@ -94,7 +94,7 @@ export default async function ContactPage({
                 </a>
                 <p className="mt-3 text-xs leading-relaxed text-fog-dim">
                   Submissions are stored so we can reply and follow up. We never sell contact data or
-                  add you to sequences you didn't ask for.
+                  add you to sequences you didn&apos;t ask for.
                 </p>
               </div>
             </div>

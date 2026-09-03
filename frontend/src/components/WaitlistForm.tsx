@@ -26,6 +26,11 @@ export function WaitlistForm({ product, productName }: WaitlistFormProps) {
     setStatus("submitting");
     setErrorMsg(null);
     try {
+      if (process.env.NODE_ENV !== "production" && !process.env.NEXT_PUBLIC_API_URL) {
+        console.warn(
+          "NEXT_PUBLIC_API_URL is not set. Falling back to http://localhost:4000",
+        );
+      }
       const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
       const res = await fetch(`${apiUrl}/api/waitlist`, {
         method: "POST",
@@ -50,7 +55,7 @@ export function WaitlistForm({ product, productName }: WaitlistFormProps) {
       <div className="flex items-center gap-3 rounded-[8px] border border-ok/40 bg-ok/10 px-4 py-3">
         <Sparkles className="h-4 w-4 shrink-0 text-ok" aria-hidden="true" />
         <p className="text-sm text-ok">
-          You're on the list for <strong>{productName}</strong>. We'll reach out before launch.
+          You&apos;re on the list for <strong>{productName}</strong>. We&apos;ll reach out before launch.
         </p>
       </div>
     );

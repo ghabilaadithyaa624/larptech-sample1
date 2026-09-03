@@ -22,10 +22,10 @@ export default function NotFound() {
         </p>
         <MonoLabel className="mt-4 block">{"// route_not_found"}</MonoLabel>
         <h1 className="mt-4 text-2xl font-semibold tracking-[-0.02em] text-snow sm:text-3xl">
-          This route doesn't exist — yet.
+          This route doesn&apos;t exist — yet.
         </h1>
         <p className="mt-4 text-sm leading-relaxed text-fog sm:text-base">
-          The page you're after moved, never shipped, or was never real. The fastest way back to
+          The page you&apos;re after moved, never shipped, or was never real. The fastest way back to
           something useful:
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

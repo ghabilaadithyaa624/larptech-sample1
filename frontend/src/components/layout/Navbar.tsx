@@ -45,9 +45,11 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleEscape);
   }, []);
 
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileMenuOpen(false);
-  }, [pathname]);
+  }
 
   return (
     <header

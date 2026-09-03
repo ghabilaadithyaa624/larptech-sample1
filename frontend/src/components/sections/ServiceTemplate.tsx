@@ -4,7 +4,14 @@ import { Button } from "@/components/ui/Button";
 import { MonoLabel, SectionHeading } from "@/components/ui/bits";
 import { Reveal } from "@/components/ui/Reveal";
 import { CTASection } from "@/components/sections/CTASection";
+import { Counter } from "@/components/ui/Counter";
 import type { Service } from "@/lib/services";
+
+function parseStat(raw: string): { to: number; suffix?: string } | null {
+  const match = /^(\d+)([%xX+kKM]?)$/.exec(raw.trim());
+  if (!match) return null;
+  return { to: parseInt(match[1], 10), suffix: match[2] || undefined };
+}
 
 export function ServiceTemplate({ service }: { service: Service }) {
   const Icon = service.icon;
@@ -49,7 +56,7 @@ export function ServiceTemplate({ service }: { service: Service }) {
                 <Icon className="h-5 w-5 text-accent-soft" aria-hidden="true" />
               </span>
               <MonoLabel tone="accent">
-                {service.code} // {service.name}
+                {service.code} {"//"} {service.name}
               </MonoLabel>
             </div>
             <h1 className="mt-6 text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-snow sm:text-5xl lg:text-[56px]">
@@ -71,12 +78,21 @@ export function ServiceTemplate({ service }: { service: Service }) {
             <div className="card-line rounded-[12px] p-6">
               <MonoLabel>{"// snapshot"}</MonoLabel>
               <ul className="mt-5 divide-y divide-line">
-                {service.stats.map((st) => (
-                  <li key={st.label} className="flex items-baseline justify-between gap-4 py-4 first:pt-0 last:pb-0">
-                    <span className="text-2xl font-semibold tracking-[-0.02em] text-accent-soft">{st.value}</span>
-                    <span className="text-right text-xs leading-relaxed text-fog">{st.label}</span>
-                  </li>
-                ))}
+                {service.stats.map((st) => {
+                  const parsed = parseStat(st.value);
+                  return (
+                    <li key={st.label} className="flex items-baseline justify-between gap-4 py-4 first:pt-0 last:pb-0">
+                      <span className="text-2xl font-semibold tracking-[-0.02em] text-accent-soft">
+                        {parsed ? (
+                          <Counter to={parsed.to} suffix={parsed.suffix} />
+                        ) : (
+                          st.value
+                        )}
+                      </span>
+                      <span className="text-right text-xs leading-relaxed text-fog">{st.label}</span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </Reveal>

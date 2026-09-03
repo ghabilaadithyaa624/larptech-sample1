@@ -75,6 +75,13 @@ Copy `frontend/.env.example` → `frontend/.env.local` and fill in:
 
 ---
 
+## Deployment env vars
+
+- **Vercel (frontend)**: `NEXT_PUBLIC_API_URL` (required), `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_GA_ID` (optional)
+- **Render (backend)**: `DATABASE_URL`, `FRONTEND_ORIGIN` (required — must exactly match the live frontend origin or CORS silently blocks every form submission), `RESEND_API_KEY` (optional)
+
+---
+
 ## Getting Started
 
 ### 1. Install all dependencies
