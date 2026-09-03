@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "outline" | "ghost" | "cyan";
+type Variant = "primary" | "outline" | "ghost";
 type Size = "sm" | "md" | "lg";
 
 const base =
@@ -9,10 +9,9 @@ const base =
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-accent text-white hover:bg-accent-soft hover:shadow-[0_10px_34px_-12px_rgba(91,95,239,0.8)] active:translate-y-px",
-  cyan: "bg-cyan text-ink hover:brightness-110 hover:shadow-[0_10px_34px_-12px_rgba(34,211,238,0.6)] active:translate-y-px",
+    "bg-[linear-gradient(180deg,#5B8AFF_0%,#3A6AEF_100%)] text-white shadow-[0_0_0_1px_rgba(207,226,255,0.24),0_-0.5px_0_0_rgba(255,255,255,0.3)_inset,0_0.5px_0_0_rgba(255,255,255,0.1)_inset] hover:scale-[1.02] hover:shadow-[0_10px_24px_-8px_rgba(91,138,255,0.6),0_0_0_1px_rgba(207,226,255,0.24),0_-0.5px_0_0_rgba(255,255,255,0.3)_inset,0_0.5px_0_0_rgba(255,255,255,0.1)_inset] active:translate-y-px active:scale-100",
   outline:
-    "border border-line-strong text-snow hover:border-accent-soft hover:bg-accent-dim active:translate-y-px",
+    "border border-line-strong text-snow hover:border-[#5B8AFF]/50 hover:bg-[#5B8AFF]/10 hover:shadow-[0_0_15px_-5px_rgba(91,138,255,0.3)] active:translate-y-px",
   ghost: "text-fog hover:text-snow hover:bg-white/5",
 };
 

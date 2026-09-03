@@ -53,20 +53,15 @@ export default function ServicesPage() {
         <div className="space-y-4">
           {SERVICES.map((s, i) => {
             const Icon = s.icon;
-            const cyan = s.accent === "cyan";
             return (
               <Reveal key={s.slug} delay={i * 0.05}>
                 <Link
                   href={`/services/${s.slug}`}
-                  className={`card-line ${cyan ? "card-hover-cyan" : "card-hover"} group grid gap-6 rounded-[12px] p-6 sm:p-7 lg:grid-cols-[auto_1fr_auto] lg:items-center`}
+                  className="card-line card-hover group grid gap-6 rounded-[12px] p-6 sm:p-7 lg:grid-cols-[auto_1fr_auto] lg:items-center"
                 >
                   <div className="flex items-center gap-4">
-                    <span
-                      className={`grid h-12 w-12 shrink-0 place-items-center rounded-[10px] border border-line ${
-                        cyan ? "bg-cyan-dim" : "bg-accent-dim"
-                      }`}
-                    >
-                      <Icon className={`h-5 w-5 ${cyan ? "text-cyan" : "text-accent-soft"}`} aria-hidden="true" />
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[10px] border border-line bg-accent-dim">
+                      <Icon className="h-5 w-5 text-accent-soft" aria-hidden="true" />
                     </span>
                     <MonoLabel className="hidden sm:block">{s.code}</MonoLabel>
                   </div>
@@ -144,8 +139,8 @@ export default function ServicesPage() {
           <Reveal delay={0.08}>
             <div className="card-line flex h-full flex-col rounded-[12px] p-7 opacity-80">
               <div className="flex items-center justify-between">
-                <span className="grid h-11 w-11 place-items-center rounded-[10px] border border-line bg-cyan-dim/60">
-                  <Video className="h-5 w-5 text-cyan/70" aria-hidden="true" />
+                <span className="grid h-11 w-11 place-items-center rounded-[10px] border border-line bg-accent-dim/60">
+                  <Video className="h-5 w-5 text-accent-soft/70" aria-hidden="true" />
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-fog-dim">
                   <Zap className="h-3 w-3" aria-hidden="true" />

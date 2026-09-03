@@ -6,13 +6,13 @@ export function MonoLabel({
   className = "",
 }: {
   children: ReactNode;
-  tone?: "fog" | "accent" | "cyan" | "ok";
+  tone?: "fog" | "accent" | "ice" | "ok";
   className?: string;
 }) {
   const tones = {
     fog: "text-fog-dim",
     accent: "text-accent-soft",
-    cyan: "text-cyan",
+    ice: "text-ice",
     ok: "text-ok",
   } as const;
   return (
@@ -34,7 +34,7 @@ export function SectionHeading({
   label: string;
   title: ReactNode;
   sub?: ReactNode;
-  tone?: "accent" | "cyan";
+  tone?: "accent";
   className?: string;
 }) {
   return (
@@ -43,7 +43,7 @@ export function SectionHeading({
         {"// "}
         {label}
       </MonoLabel>
-      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-snow sm:text-4xl">
+      <h2 className="mt-4 text-4xl font-semibold tracking-[-0.03em] text-snow sm:text-5xl">
         {title}
       </h2>
       {sub ? <p className="mt-4 text-base leading-relaxed text-fog sm:text-lg">{sub}</p> : null}
@@ -56,12 +56,12 @@ export function Logo({ className = "" }: { className?: string }) {
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <span className="relative grid h-8 w-8 place-items-center rounded-[9px] border border-line-strong bg-surface">
         <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" aria-hidden="true">
-          <circle cx="12" cy="12" r="9.5" fill="none" stroke="#5B5FEF" strokeWidth="2" />
+          <circle cx="12" cy="12" r="9.5" fill="none" stroke="#4A7AFF" strokeWidth="2" />
           <path d="M10 8.2 L16 12 L10 15.8 Z" fill="#F5F5F7" />
         </svg>
       </span>
       <span className="text-[17px] font-semibold tracking-[-0.02em] text-snow">
-        Larp<span className="text-accent-soft">Tech</span>
+        Larp<span className="text-accent-soft">tech</span>
       </span>
     </span>
   );

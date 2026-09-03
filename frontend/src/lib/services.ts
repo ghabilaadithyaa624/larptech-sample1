@@ -6,7 +6,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type ServiceAccent = "indigo" | "cyan";
+export type ServiceAccent = "indigo";
 
 export type Service = {
   slug: string;
@@ -89,7 +89,7 @@ export const SERVICES: Service[] = [
     short: "Trading Agents",
     hook: "AI-driven algorithmic trading systems and automation for financial markets.",
     icon: CandlestickChart,
-    accent: "cyan",
+    accent: "indigo",
     heroTitle: "Research velocity and risk discipline, automated for trading teams.",
     heroSub:
       "I build the AI research stack for trading teams: data pipelines, backtesting harnesses, signal monitoring and risk guardrails. Research and decision support — never blind auto-execution.",

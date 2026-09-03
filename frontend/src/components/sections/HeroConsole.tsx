@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-type FeedLine = { tag: string; tone: "indigo" | "cyan"; text: string };
+type FeedLine = { tag: string; tone: "indigo"; text: string };
 
 const FEED: FeedLine[] = [
   { tag: "custom-ai-agents", tone: "indigo", text: "invoice_batch processed · 312 docs · 0 exceptions" },
-  { tag: "trading-agents", tone: "cyan", text: "backtest complete · leakage checks passed · 0 lookahead" },
+  { tag: "trading-agents", tone: "indigo", text: "backtest complete · leakage checks passed · 0 lookahead" },
   { tag: "marketing-agents", tone: "indigo", text: "campaign_draft_v7 approved → scheduled 09:00" },
   { tag: "website-dev", tone: "indigo", text: "deploy complete · LCP 1.2s · CWV all green" },
-  { tag: "crack-it", tone: "cyan", text: "interview session · 4 questions predicted · coaching ready" },
+  { tag: "crack-it", tone: "indigo", text: "interview session · 4 questions predicted · coaching ready" },
   { tag: "meeting-assistant", tone: "indigo", text: "action items extracted · CRM pushed · follow-up sent" },
 ];
 
@@ -98,7 +98,7 @@ export function HeroConsole() {
 }
 
 function FeedRow({ line, text, typing }: { line: FeedLine; text: string; typing: boolean }) {
-  const toneClass = line.tone === "cyan" ? "text-cyan" : "text-accent-soft";
+  const toneClass = "text-accent-soft";
   return (
     <div className="flex gap-2">
       <span className="shrink-0 text-fog-dim">[{line.tag}]</span>
