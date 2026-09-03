@@ -149,7 +149,7 @@ export function Navbar() {
           ))}
 
           <Button href="/contact" size="sm" className="ml-3">
-            Book a Consultation
+            Start a project
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Button>
         </nav>
@@ -206,11 +206,11 @@ export function Navbar() {
             </div>
 
             <Button href="/contact" className="mt-6 w-full" size="lg">
-              Book a Consultation
+              Start a project
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
             <p className="mt-4 text-center font-mono text-[11px] tracking-[0.15em] text-fog-dim">
-              RESPONSE &lt; 1 BUSINESS DAY
+              REPLY &lt; 1 BUSINESS DAY
             </p>
           </div>
         </div>

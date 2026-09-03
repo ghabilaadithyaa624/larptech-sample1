@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import healthRouter from "./routes/health";
 import leadsRouter from "./routes/leads";
+import waitlistRouter from "./routes/waitlist";
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? "4000", 10);
@@ -41,6 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 // ---------------------------------------------------------------------------
 app.use("/api/health", healthRouter);
 app.use("/api/leads", leadsRouter);
+app.use("/api/waitlist", waitlistRouter);
 
 // 404 catch-all
 app.use((_req, res) => {

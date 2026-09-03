@@ -123,8 +123,8 @@ export function ServiceTemplate({ service }: { service: Service }) {
           <SectionHeading
             label="the_larptech_approach"
             tone={cyan ? "cyan" : "accent"}
-            title="How we build it — three moves, no mystery."
-            sub="Every vertical follows the same delivery spine: understand the money path, automate it with guardrails, then feed results back into the system."
+            title="How I build it — three moves, no mystery."
+            sub="Every engagement follows the same delivery spine: understand the problem, build it with guardrails, then hand it over fully documented."
           />
         </Reveal>
         <div className="mt-12 grid gap-4 md:grid-cols-3">
@@ -150,7 +150,7 @@ export function ServiceTemplate({ service }: { service: Service }) {
               label="what_you_get"
               tone={cyan ? "cyan" : "accent"}
               title="Handed over, documented, yours."
-              sub="No black boxes and no hostage-taking. You own the systems, the docs and the keys when we're done."
+              sub="No black boxes, no hostage-taking. You own the systems, the docs and the keys when I'm done."
             />
           </Reveal>
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -171,7 +171,7 @@ export function ServiceTemplate({ service }: { service: Service }) {
         <CTASection
           accent={service.accent}
           title={`Ready to put ${service.name} to work?`}
-          sub="Tell us where it hurts. We'll come back with a scoped plan, a timeline and a number — usually within two business days."
+          sub="Tell me where it hurts. I'll come back with a scoped plan, a timeline and a number — usually within two business days."
           primaryHref={`/contact?service=${service.slug}`}
           primaryLabel={`Get started with ${service.name}`}
           secondaryHref="/case-studies"

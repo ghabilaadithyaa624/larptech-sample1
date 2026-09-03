@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 type FeedLine = { tag: string; tone: "indigo" | "cyan"; text: string };
 
 const FEED: FeedLine[] = [
-  { tag: "marketing-ai", tone: "indigo", text: "campaign_draft_v14 approved → scheduled 09:00" },
-  { tag: "sales-ai", tone: "indigo", text: "42 leads scored · 7 meetings booked · CRM synced" },
-  { tag: "ai-agents", tone: "indigo", text: "invoice_batch processed · 312 docs · 0 exceptions" },
-  { tag: "security-mssp", tone: "cyan", text: "alert triaged · severity low · auto-contained" },
-  { tag: "ecommerce-ai", tone: "indigo", text: "personalization live · AOV +18% on cohort B" },
-  { tag: "trading-ai", tone: "cyan", text: "backtest complete · leakage checks passed" },
+  { tag: "custom-ai-agents", tone: "indigo", text: "invoice_batch processed · 312 docs · 0 exceptions" },
+  { tag: "trading-agents", tone: "cyan", text: "backtest complete · leakage checks passed · 0 lookahead" },
+  { tag: "marketing-agents", tone: "indigo", text: "campaign_draft_v7 approved → scheduled 09:00" },
+  { tag: "website-dev", tone: "indigo", text: "deploy complete · LCP 1.2s · CWV all green" },
+  { tag: "crack-it", tone: "cyan", text: "interview session · 4 questions predicted · coaching ready" },
+  { tag: "meeting-assistant", tone: "indigo", text: "action items extracted · CRM pushed · follow-up sent" },
 ];
 
 export function HeroConsole() {
@@ -86,7 +86,7 @@ export function HeroConsole() {
         {/* status bar */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-3 sm:px-5">
           <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-fog-dim">
-            6 verticals · 1 partner · 0 vendor sprawl
+            4 services · 2 products · 0 vendor sprawl
           </span>
           <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-fog-dim">
             uptime 99.98%
