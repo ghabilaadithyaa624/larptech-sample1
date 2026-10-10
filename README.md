@@ -9,9 +9,10 @@
 This repository is split into two independently-runnable applications that communicate over HTTP:
 
 ```
-larptech-sample-checking/
+larptech-sample1/
 ├── backend/        ← Node.js + Express API server  (port 4000)
 ├── frontend/       ← Next.js 16 web application    (port 3000)
+├── render.yaml     ← Render Blueprint for the backend (see "Production Deployment")
 ├── package.json    ← Root: runs both via concurrently
 └── README.md
 ```
@@ -20,12 +21,18 @@ larptech-sample-checking/
 
 | Path | Description |
 |---|---|
-| `src/index.ts` | Express app entry point (CORS, JSON body parsing, route mounting) |
-| `src/routes/health.ts` | `GET /api/health` — DB liveness check |
+| `src/index.ts` | Bootstrap: env validation, listen, graceful shutdown, outbox worker |
+| `src/app.ts` | Express app graph: CORS, JSON parsing, rate limits, security headers |
+| `src/routes/health.ts` | `GET /api/health` — DB liveness check (Render healthCheckPath) |
 | `src/routes/leads.ts` | `POST /api/leads` — Contact form lead capture |
-| `src/db/index.ts` | Drizzle ORM + PostgreSQL pool |
-| `src/db/schema.ts` | `leads` table schema |
-| `src/lib/email.ts` | Resend email notification (best-effort) |
+| `src/routes/waitlist.ts` | `POST /api/waitlist` — Product waitlist signup |
+| `src/db/index.ts` | Drizzle ORM + PostgreSQL pool (TLS pinned to `verify-full`) |
+| `src/db/schema.ts` | `leads`, `waitlist`, `lead_notifications` schema |
+| `src/db/migrate.ts` | Idempotent SQL migration runner (`npm run db:migrate`) |
+| `src/lib/outbox.ts` | Transactional outbox worker for team notification emails |
+| `src/lib/outboxSender.ts` | Resend send with bounded timeout + idempotency keys |
+| `src/lib/email.ts` | Resend email client |
+| `src/lib/env.ts` | Environment validation — fails closed on misconfiguration |
 | `src/lib/validators.ts` | Zod schema for lead payload validation |
 
 ### Frontend (`/frontend`)
@@ -34,15 +41,15 @@ larptech-sample-checking/
 |---|---|
 | `src/app/(marketing)/` | All public pages (home, about, services, contact, pricing…) |
 | `src/components/` | Shared UI components (Navbar, Footer, ContactForm, etc.) |
-| `src/lib/analytics.ts` | GA4 analytics shim |
+| `src/lib/analytics.ts` | GA4 analytics shim — fires only after explicit consent |
 | `src/lib/services.ts` | Service definitions and metadata |
-| `src/lib/validators.ts` | Zod schema (duplicated — used for client-side form validation) |
+| `src/lib/validators.ts` | Zod schema for client-side form validation (kept in sync with the backend by `validatorParity.test.ts`) |
 
 ---
 
 ## Prerequisites
 
-- **Node.js** ≥ 18
+- **Node.js** ≥ 22 (`backend/package.json` and `frontend/package.json` both pin `engines: >=22`)
 - **PostgreSQL** running locally (or a hosted connection string)
 - (Optional) A [Resend](https://resend.com) API key for email notifications
 
@@ -56,10 +63,10 @@ Copy `backend/.env.example` → `backend/.env` and fill in:
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `DATABASE_URL` | ✅ | — | PostgreSQL connection string |
+| `DATABASE_URL` | ✅ | — | PostgreSQL connection string (TLS `verify-full` against remote hosts) |
 | `PORT` | ❌ | `4000` | Express server port |
-| `FRONTEND_ORIGIN` | ❌ | `http://localhost:3000` | Allowed CORS origin |
-| `RESEND_API_KEY` | ❌ | — | Resend API key for email alerts |
+| `FRONTEND_ORIGIN` | ✅ (prod) | — | Allowed CORS origin(s), comma-separated. **Required in production** — there is no silent localhost default; an unset value fails startup |
+| `RESEND_API_KEY` | ❌ | — | Resend API key for team notification emails. If unset in production, startup logs a warning: leads are stored but nobody is emailed |
 | `EMAIL_FROM` | ❌ | `LarpTech Leads <leads@larptech.io>` | Sender address |
 | `LEAD_INBOX_EMAIL` | ❌ | `team@larptech.io` | Lead notification recipient |
 
@@ -75,10 +82,28 @@ Copy `frontend/.env.example` → `frontend/.env.local` and fill in:
 
 ---
 
-## Deployment env vars
+## Production Deployment
 
-- **Vercel (frontend)**: `NEXT_PUBLIC_API_URL` (required), `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_GA_ID` (optional)
-- **Render (backend)**: `DATABASE_URL`, `FRONTEND_ORIGIN` (required — must exactly match the live frontend origin or CORS silently blocks every form submission), `RESEND_API_KEY` (optional)
+### Env vars
+
+- **Vercel (frontend)**: `NEXT_PUBLIC_API_URL` (required at build time — `next build` fails without it), `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_GA_ID` (optional; enables the consent-gated GA4 loader)
+- **Render (backend)**: `DATABASE_URL`, `FRONTEND_ORIGIN` (required — must exactly match the live frontend origin or CORS blocks every form submission), `RESEND_API_KEY` (optional)
+
+### Render blueprint (`render.yaml`)
+
+The backend deploys from `render.yaml`. Two behaviours matter for a working deploy:
+
+- **`preDeployCommand: npm run db:migrate`** applies SQL migrations after the build
+  and before traffic switches. The runner is idempotent, so it is safe on every
+  deploy. Without it, a fresh database has no `lead_notifications` table: every
+  form submission returns 500 while `GET /api/health` still reports healthy.
+- **`healthCheckPath: /api/health`** — the default `/` returns 404 because the API
+  has no root route.
+
+**Do not set `NODE_ENV` in `render.yaml`.** Render already runs Node services with
+`NODE_ENV=production` at runtime. Setting it in the blueprint also applies it during
+the build, which makes npm skip devDependencies — and `npm run db:migrate` runs
+through `tsx`, a devDependency. The deploy then fails with `tsx: not found`.
 
 ---
 
@@ -331,8 +356,8 @@ npm start
 | Frontend | Next.js 16, React 19, Tailwind CSS 4, Framer Motion |
 | Backend | Node.js, Express 4, TypeScript |
 | Database | PostgreSQL, Drizzle ORM |
-| Validation | Zod (shared schema, duplicated in both projects) |
-| Email | Resend (optional, best-effort) |
+| Validation | Zod (mirrored frontend/backend schemas, parity-tested) |
+| Email | Resend (optional) — transactional outbox delivery with retries |
 | Analytics | Google Analytics 4 (optional) |
 | Dev runner | concurrently |
 

@@ -1,13 +1,48 @@
+# LarpTech backend — Render Blueprint
+#
+# Topology: this service is the API only. The frontend deploys separately to
+# Vercel (see frontend/vercel.json). Secrets (DATABASE_URL, FRONTEND_ORIGIN,
+# RESEND_API_KEY) are declared with sync: false and their values are set in the
+# Render dashboard — never commit them.
+#
+# NODE_ENV is deliberately NOT set in this file. Render runs Node services with
+# NODE_ENV=production at runtime on its own (see "Default Environment Variables"
+# in the Render docs). Setting it here would also apply it during the build,
+# which makes npm skip devDependencies — and preDeployCommand below runs
+# migrations through tsx, a devDependency. The deploy would fail with
+# "tsx: not found". (Verified against npm 10/11: NODE_ENV=production npm
+# install / npm ci both omit devDependencies.)
+
 services:
   - type: web
     name: larptech-backend
-    env: node
+    # `runtime` replaces the deprecated `env` field (Render Blueprint spec).
+    runtime: node
     rootDir: backend
-    buildCommand: npm install && npm run build
+    # npm ci over npm install: install the exact tree from package-lock.json, so
+    # a deploy cannot pick up dependency versions CI never tested.
+    buildCommand: npm ci && npm run build
+    # Runs after buildCommand and before the new version takes traffic.
+    # migrate.ts is idempotent and records applied files in
+    # drizzle.__drizzle_migrations, so this is safe on every deploy. Without it a
+    # fresh database has no lead_notifications table: every form submission
+    # fails with lead_persist_failed while GET /api/health still returns 200,
+    # because the health check only runs `select 1`.
+    preDeployCommand: npm run db:migrate
     startCommand: npm start
+    # Render polls this path. The default is "/", which this API answers with a
+    # 404 (it has no root route). /api/health verifies the database connection.
+    healthCheckPath: /api/health
+    # SIGTERM grace period before SIGKILL. The app drains for up to
+    # SHUTDOWN_GRACE_MS (20s) then exits; 30s — Render's default, pinned here so
+    # it cannot silently change — leaves headroom for a clean shutdown.
+    maxShutdownDelaySeconds: 30
     envVars:
       - key: PORT
         value: 4000
+      # Pin the Node major to backend/package.json engines (>=22).
+      - key: NODE_VERSION
+        value: "22"
       - key: DATABASE_URL
         sync: false
       - key: FRONTEND_ORIGIN
@@ -15,6 +50,6 @@ services:
       - key: RESEND_API_KEY
         sync: false
       - key: EMAIL_FROM
-        value: LarpTech Leads <leads@larptech.io>
+        value: "LarpTech Leads <leads@larptech.io>"
       - key: LEAD_INBOX_EMAIL
         value: team@larptech.io

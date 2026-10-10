@@ -4,13 +4,13 @@ node_modules/
 .pnp.js
 .yarn/install-state.gz
 
-# Environment variables
+# Environment variables — every flavour of .env is ignored, including
+# .env.production / .env.staging (the old patterns missed those), and the
+# examples are explicitly re-included so they stay tracked.
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
 *.env
+!.env.example
 
 # Next.js build output
 .next/
