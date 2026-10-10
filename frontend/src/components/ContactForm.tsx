@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { MonoLabel } from "@/components/ui/bits";
 import { trackEvent } from "@/lib/analytics";
+import { API_BASE_URL, parseApiError } from "@/lib/apiBase";
 import { SERVICE_OPTIONS } from "@/lib/services";
 import { leadSchema, type LeadInput } from "@/lib/validators";
 
@@ -51,29 +52,30 @@ export function ContactForm({ initialService }: { initialService?: string }) {
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
     try {
-      if (process.env.NODE_ENV !== "production" && !process.env.NEXT_PUBLIC_API_URL) {
-        console.warn(
-          "NEXT_PUBLIC_API_URL is not set. Falling back to http://localhost:4000",
-        );
-      }
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
-      const res = await fetch(`${apiUrl}/api/leads`, {
+      const res = await fetch(`${API_BASE_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
       if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as {
-          message?: string;
-          fieldErrors?: Record<string, string>;
-        } | null;
-        if (body?.fieldErrors) {
-          // surface server-side field errors inline
-          Object.entries(body.fieldErrors).forEach(([field, message]) => {
-            setError(field as keyof LeadInput, { message });
+        // `res.json()` throws on an HTML error page, which is what an Edge timeout or a
+        // proxy error returns; the catch keeps the user on a sensible message.
+        const raw: unknown = await res.json().catch(() => null);
+        const parsed = parseApiError(
+          raw,
+          "Something went wrong on our side. Your details are preserved — hit retry.",
+        );
+        if (parsed.fieldErrors) {
+          // Surface server-side field errors inline. Client-side errors already move focus to
+          // the first invalid field (react-hook-form does that by default); server-side ones
+          // are set after the fact, so focus has to be requested explicitly — otherwise a
+          // screen reader user is told "please fix the highlighted fields" with no indication
+          // of where the problem is.
+          Object.entries(parsed.fieldErrors).forEach(([field, message], index) => {
+            setError(field as keyof LeadInput, { message }, { shouldFocus: index === 0 });
           });
         }
-        setFormError(body?.message ?? "Something went wrong on our side. Your details are preserved — hit retry.");
+        setFormError(parsed.message);
         return;
       }
       const body = (await res.json()) as { id?: string };
@@ -97,6 +99,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
           </label>
           <input
             id="name"
+            required
             type="text"
             autoComplete="name"
             placeholder="Ada Lovelace"
@@ -114,6 +117,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
           </label>
           <input
             id="email"
+            required
             type="email"
             autoComplete="email"
             placeholder="you@company.com"
@@ -148,6 +152,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
           </label>
           <select
             id="serviceInterest"
+            required
             aria-invalid={!!errors.serviceInterest}
             aria-describedby={errors.serviceInterest ? "service-error" : undefined}
             className={`${inputClasses} appearance-none ${errors.serviceInterest ? "border-err" : ""} ${
@@ -155,14 +160,13 @@ export function ContactForm({ initialService }: { initialService?: string }) {
             }`}
             {...register("serviceInterest")}
           >
-            <option value="" disabled selected={!validInitial}>
+            <option value="" disabled>
               Select a service…
             </option>
             {SERVICE_OPTIONS.map((o) => (
               <option
                 key={o.value}
                 value={o.value}
-                selected={validInitial === o.value}
                 className="bg-surface text-snow"
               >
                 {o.label}

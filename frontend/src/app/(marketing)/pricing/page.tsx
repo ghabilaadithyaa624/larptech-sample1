@@ -119,6 +119,7 @@ export default function PricingPage() {
           <Reveal>
             <SectionHeading
               label="pricing // engagement_models"
+              level="h1"
               title={
                 <>
                   Three ways to engage.

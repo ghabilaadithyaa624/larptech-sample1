@@ -49,6 +49,7 @@ export default async function ContactPage({
         <Reveal>
           <SectionHeading
             label="contact // consultation_request"
+            level="h1"
             title={
               preselectedName ? (
                 <>Let&apos;s talk {preselectedName}.</>

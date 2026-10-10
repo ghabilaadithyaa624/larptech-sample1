@@ -24,28 +24,42 @@ export function MonoLabel({
   );
 }
 
+/**
+ * Page or section heading.
+ *
+ * `level` exists because several pages use this for their *only* heading, which meant they
+ * shipped with no `<h1>` at all — the document's top-level heading was an `<h2>`. Screen
+ * reader users navigate by heading level, and a page whose first heading is level 2 reads as
+ * though it is a subsection of something that is not there.
+ *
+ * Use `level="h1"` where this is the page's primary heading; leave the default for headings
+ * that sit below one. Exactly one `<h1>` per page.
+ */
 export function SectionHeading({
   label,
   title,
   sub,
   tone = "accent",
   className = "",
+  level = "h2",
 }: {
   label: string;
   title: ReactNode;
   sub?: ReactNode;
   tone?: "accent";
   className?: string;
+  level?: "h1" | "h2";
 }) {
+  const Heading = level;
   return (
     <div className={`max-w-3xl ${className}`}>
       <MonoLabel tone={tone}>
         {"// "}
         {label}
       </MonoLabel>
-      <h2 className="mt-4 text-4xl font-semibold tracking-[-0.03em] text-snow sm:text-5xl">
+      <Heading className="mt-4 text-4xl font-semibold tracking-[-0.03em] text-snow sm:text-5xl">
         {title}
-      </h2>
+      </Heading>
       {sub ? <p className="mt-4 text-base leading-relaxed text-fog sm:text-lg">{sub}</p> : null}
     </div>
   );

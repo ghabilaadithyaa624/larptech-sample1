@@ -11,6 +11,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/about`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${siteUrl}/case-studies`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${siteUrl}/pricing`, changeFrequency: "monthly", priority: 0.8 },
+    // /contact is a primary conversion page and is allowed by robots.txt; it was the
+    // only marketing route missing from the sitemap. /thank-you stays out on purpose —
+    // robots.txt disallows it, it is post-conversion and adds nothing for crawlers.
+    { url: `${siteUrl}/contact`, changeFrequency: "monthly", priority: 0.9 },
   ];
   const serviceRoutes: MetadataRoute.Sitemap = SERVICES.map((s) => ({
     url: `${siteUrl}/services/${s.slug}`,

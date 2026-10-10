@@ -25,6 +25,7 @@ export default function ServicesPage() {
           <Reveal>
             <SectionHeading
               label="svc_index // all_practices"
+              level="h1"
               title={
                 <>
                   Everything we build —

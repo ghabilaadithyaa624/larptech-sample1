@@ -2,12 +2,17 @@
   "name": "larptech",
   "private": true,
   "version": "1.0.0",
-  "description": "LarpTech — AI solutions monorepo (frontend + backend)",
+  "description": "LarpTech \u2014 AI solutions monorepo (frontend + backend)",
   "scripts": {
     "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
-    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
     "build": "npm run build --prefix backend && npm run build --prefix frontend",
-    "typecheck": "npm run typecheck --prefix backend && npm run typecheck --prefix frontend"
+    "typecheck": "npm run typecheck --prefix backend && npm run typecheck --prefix frontend",
+    "test": "npm test --prefix backend",
+    "test:integration": "npm run test:integration --prefix backend",
+    "test:all": "npm run test:all --prefix backend",
+    "lint": "npm run lint --prefix frontend",
+    "db:migrate": "npm run db:migrate --prefix backend",
+    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
@@ -15,5 +20,8 @@
   "dependencies": {
     "@neon/config": "^1.2.0",
     "@neon/env": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
