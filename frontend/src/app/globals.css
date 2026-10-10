@@ -117,6 +117,42 @@
   }
 }
 
+@layer components {
+  /*
+   * Skip link — WCAG 2.4.1 Bypass Blocks.
+   *
+   * Without this, a keyboard user landing on any page has to tab through the whole header
+   * before reaching the content, on every single page. Hidden off-screen until focused, then
+   * revealed — never `display: none`, which would remove it from the tab order entirely and
+   * defeat the point.
+   */
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 200;
+    padding: 0.625rem 1rem;
+    border-radius: 8px;
+    background-color: var(--color-accent);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transform: translateY(-250%);
+    transition: transform 150ms ease;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skip-link {
+      transition: none;
+    }
+  }
+}
+
 @layer utilities {
   .glass-card {
     background-color: rgba(19, 19, 24, 0.4);

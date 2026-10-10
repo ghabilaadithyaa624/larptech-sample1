@@ -66,6 +66,7 @@ export default function CaseStudiesPage() {
           <Reveal>
             <SectionHeading
               label="case_studies // proof_points"
+              level="h1"
               title={
                 <>
                   Proof, published

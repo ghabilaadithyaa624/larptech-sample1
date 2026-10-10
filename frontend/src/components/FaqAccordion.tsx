@@ -36,7 +36,15 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
                 isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
               }`}
             >
-              <div className="overflow-hidden">
+              {/*
+                Collapsing to `grid-rows-[0fr]` gives the height animation, but zero height is not
+                the same as hidden: without `invisible` the collapsed answer stays in the
+                accessibility tree and any link inside it stays focusable, so a screen reader
+                announces every answer while the trigger says `aria-expanded="false"`.
+                `visibility: hidden` is used rather than `display: none` or the `hidden` attribute
+                because it is animatable and keeps the collapse transition working.
+              */}
+              <div className={`overflow-hidden ${isOpen ? "" : "invisible"}`}>
                 <p className="px-5 pb-5 text-sm leading-relaxed text-fog sm:px-6">{item.a}</p>
               </div>
             </div>

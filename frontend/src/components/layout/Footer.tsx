@@ -17,7 +17,7 @@ export function Footer() {
           
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-16">
             <div>
-              <h3 className="text-sm font-medium text-snow mb-4">Services</h3>
+              <h2 className="text-sm font-medium text-snow mb-4">Services</h2>
               <ul className="space-y-3">
                 <li>
                   <Link href="/services#marketing-ai" className="text-sm text-fog hover:text-snow transition-colors">
@@ -53,7 +53,7 @@ export function Footer() {
             </div>
             
             <div>
-              <h3 className="text-sm font-medium text-snow mb-4">Company</h3>
+              <h2 className="text-sm font-medium text-snow mb-4">Company</h2>
               <ul className="space-y-3">
                 <li>
                   <Link href="/about" className="text-sm text-fog hover:text-snow transition-colors">
@@ -69,7 +69,7 @@ export function Footer() {
             </div>
             
             <div>
-              <h3 className="text-sm font-medium text-snow mb-4">Connect</h3>
+              <h2 className="text-sm font-medium text-snow mb-4">Connect</h2>
               <ul className="space-y-3">
                 <li>
                   <a href="mailto:team@larptech.io" className="text-sm text-fog hover:text-snow transition-colors">

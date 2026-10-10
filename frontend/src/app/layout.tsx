@@ -1,14 +1,23 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, EB_Garamond } from "next/font/google";
-import Script from "next/script";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { Analytics } from "@/components/Analytics";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
-const ebGaramond = EB_Garamond({ subsets: ["latin"], variable: "--font-eb-garamond", display: "swap", weight: ["400", "500", "600", "700"] });
+// Only weight 500 is loaded: every element that uses this font sets `font-medium`, so the
+// other three weights were downloaded and never rendered. If a different weight is ever
+// needed, add it here or the browser will synthesise it.
+const ebGaramond = EB_Garamond({
+  subsets: ["latin"],
+  variable: "--font-eb-garamond",
+  display: "swap",
+  weight: ["500"],
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://larptech.io";
 
@@ -81,18 +90,24 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
-        {gaId ? (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="ga4-init" strategy="afterInteractive">
-              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`}
-            </Script>
-          </>
-        ) : null}
+        {/* Google Consent Mode defaults.
+            This must run before any Google tag, and it must run even when the visitor has
+            already consented — on a later page load the stored answer is not known yet at
+            this point in the document, so `wait_for_update` holds the tag until the
+            Analytics component grants or denies it. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}" +
+              "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied'," +
+              "ad_personalization:'denied',analytics_storage:'denied'," +
+              "functionality_storage:'granted',security_storage:'granted'," +
+              "personalization_storage:'denied',wait_for_update:500});",
+          }}
+        />
         {children}
+        <Analytics />
+        <CookieConsent />
       </body>
     </html>
   );

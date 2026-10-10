@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A newer push to the same branch makes an older run irrelevant; cancel it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: larptech_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/larptech_test
+      # The migration run below deliberately uses a second database so that it exercises the
+      # "empty database, no migrations table" path rather than reusing the one the tests
+      # already migrated.
+      MIGRATION_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/larptech_migrate_check
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Create the migration check database
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres \
+            -c 'create database larptech_migrate_check'
+
+      - name: Apply migrations to an empty database
+        # This is the step that would have caught a broken or untracked migration before it
+        # reached a deploy. It fails the build if any migration errors.
+        working-directory: backend
+        run: DATABASE_URL="$MIGRATION_DATABASE_URL" npm run db:migrate
+
+      - name: Migrations are re-runnable
+        working-directory: backend
+        run: DATABASE_URL="$MIGRATION_DATABASE_URL" npm run db:migrate
+
+      - name: Typecheck
+        working-directory: backend
+        run: npm run typecheck
+
+      - name: Unit tests
+        working-directory: backend
+        run: npm test
+
+      - name: Integration tests (PostgreSQL)
+        working-directory: backend
+        run: npm run test:integration
+
+      - name: Build
+        working-directory: backend
+        run: npm run build
+
+      - name: Audit production dependencies
+        # Dev-only advisories (drizzle-kit's esbuild chain) are excluded: they are not
+        # shipped and fixing them requires a semver-major bump.
+        working-directory: backend
+        run: npm audit --omit=dev --audit-level=high
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+
+    env:
+      # Required at build time: the app refuses to build without it rather than silently
+      # pointing forms at localhost. See frontend/src/lib/apiBase.ts.
+      NEXT_PUBLIC_API_URL: https://api.example.invalid
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: frontend
+        run: npm run typecheck
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+      - name: Audit production dependencies
+        working-directory: frontend
+        run: npm audit --omit=dev --audit-level=high
