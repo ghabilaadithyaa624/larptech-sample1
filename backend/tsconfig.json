@@ -23,6 +23,7 @@
     "src/**/*.itest.ts",
     "src/test-env.ts",
     "src/db/integrationEnv.ts",
-    "src/lib/loggingTestHooks.ts"
+    "src/lib/loggingTestHooks.ts",
+    "src/lib/crossPackageImport.ts"
   ]
 }

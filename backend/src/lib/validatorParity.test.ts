@@ -29,6 +29,12 @@ import {
  * files live in it. Test files are excluded from `tsconfig.json`, so no build artefact
  * depends on this path.
  */
+
+// Must be imported before the cross-package import below: it lets the frontend module
+// resolve `zod` through the backend's node_modules, so this test does not depend on
+// frontend dependencies being installed. See the module for the full story.
+import "./crossPackageImport";
+
 import {
   leadSchema as frontendLeadSchema,
   normaliseEmail as frontendNormaliseEmail,
